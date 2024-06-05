@@ -1,26 +1,81 @@
-Програма file_io_test призначена для дослідження швидкості запису даних у файли з різними розмірами буфера для текстових і двійкових файлів.
-Вона вимірює час, необхідний для запису заданого обсягу даних у файл, використовуючи різні розміри буфера, і виводить результати на екран. 
+File Write Speed Test
+======================
 
-Принцип роботи
-Програма створює два набори тестів:
-Тести запису в текстовий файл.
-Тести запису в двійковий файл.
-Для кожного набору тестів використовуються різні розміри буфера. 
-Кожен тест записує однаковий обсяг даних у файл і вимірює час, витрачений на цю операцію.
+Overview
+--------
 
-Деталі реалізації
+This C++ code tests the write speed of text and binary files using different buffer sizes. It writes a fixed amount of data (100 MB) to both text and binary files using various buffer sizes and measures the time taken for each write operation. The code then compares the time taken for text and binary file writes for each buffer size and prints the results.
 
-Основна функція main:
-Визначає загальний обсяг даних для запису (total_size), який дорівнює 100 МБ.
-Визначає набір розмірів буфера (buffer_sizes), що включає 1 КБ, 4 КБ, 16 КБ, 64 КБ і 256 КБ.
-Для кожного розміру буфера викликає функції тестування для текстових і двійкових файлів.
+Includes
+--------
 
-Функція test_write_speed_text:
-Приймає ім'я файлу, розмір буфера і загальний обсяг даних для запису.
-Створює буфер заданого розміру і заповнює його символом 'a'.
-Вимірює час запису даних у текстовий файл, використовуючи функцію std::ofstream::write.
+The code includes the following libraries:
+```c++
+#include <fstream>
+#include <chrono>
+#include <vector>
+#include <string>
+```
+* `<fstream>` for file input/output operations.
+* `<chrono>` for measuring time.
+* `<vector>` for dynamic arrays.
+* `<string>` for string operations.
 
-Функція test_write_speed_binary:
-Приймає ім'я файлу, розмір буфера і загальний обсяг даних для запису.
-Створює буфер заданого розміру і заповнює його символом 'a'.
-Вимірює час запису даних у двійковий файл, використовуючи функцію std::ofstream::write з прапором std::ios::binary.
+Constants
+---------
+
+The code defines two constants:
+```c++
+const std::size_t TOTAL_SIZE = 100 * 1024 * 1024; // 100 MB
+const std::vector<std::size_t> BUFFER_SIZES = { 1 * 1024, 4 * 1024, 16 * 1024, 64 * 1024, 256 * 1024 };
+```
+* `TOTAL_SIZE`: The total amount of data to write (100 MB).
+* `BUFFER_SIZES`: A vector containing different buffer sizes to test (1 KB, 4 KB, 16 KB, 64 KB, and 256 KB).
+
+Functions
+---------
+
+The code defines two functions:
+
+### test\_write\_speed\_text
+```c++
+void test_write_speed_text(const std::string& filename, std::size_t buffer_size, std::size_t total_size)
+```
+This function tests the write speed of a text file using a specified buffer size. It takes three arguments:
+
+* `filename`: The name of the text file to write.
+* `buffer_size`: The buffer size to use for writing.
+* `total_size`: The total amount of data to write.
+
+The function opens the file, initializes a buffer with the specified buffer size, and writes data to the file in a loop until the total amount of data is written. It measures the time taken for the write operation and prints the result.
+
+### test\_write\_speed\_binary
+```c++
+void test_write_speed_binary(const std::string& filename, std::size_t buffer_size, std::size_t total_size)
+```
+This function tests the write speed of a binary file using a specified buffer size. It takes the same arguments as `test_write_speed_text` and works similarly, except that it opens the file in binary mode.
+
+Main Function
+-------------
+
+The `main` function tests the write speed of text and binary files using different buffer sizes and compares the results. It first initializes two variables to store the time taken for text and binary file writes:
+```c++
+double text_write_time = 0.0;
+double binary_write_time = 0.0;
+```
+It then loops through the `BUFFER_SIZES` vector and tests the write speed of text and binary files using each buffer size:
+```c++
+for (auto buffer_size : BUFFER_SIZES) {
+    // Test write speed of text file
+    // Test write speed of binary file
+    // Compare results
+}
+```
+For each buffer size, the code measures the time taken for text and binary file writes and stores the results in `text_write_time` and `binary_write_time`, respectively. It then compares the results and prints the faster write operation and the time difference.
+
+Finally, the code waits for the user to press Enter before exiting:
+```c++
+std::cout << "Press Enter to continue...\n";
+std::cin.get();
+return 0;
+```
