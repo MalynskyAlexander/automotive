@@ -1,78 +1,206 @@
-Стандартна бібліотека файлового вводу/виводу в C++ надає набір класів і функцій для роботи з файлами. 
-Основні класи бібліотеки знаходяться в заголовку <fstream>, який включає класи для роботи з текстовими та двійковими файлами.
+# Standard File I/O Library in C++
 
-Основні класи файлового вводу/виводу
-std::ifstream: Клас для читання з текстових файлів.
-std::ofstream: Клас для запису в текстові файли.
-std::fstream: Клас для читання та запису в текстові файли.
-std::istringstream: Клас для читання з рядків (не з файлів).
-std::ostringstream: Клас для запису в рядки (не в файли).
-std::stringstream: Клас для читання та запису в рядки (не в файли).
+The C++ Standard Library provides several classes and functions to perform file input and output operations. These are part of the `<fstream>` header, which provides facilities to create, read, write, and manipulate files.
 
-Основні методи і функції
+## Overview of `<fstream>` Header
 
-std::ifstream (Input File Stream)
+The `<fstream>` header includes the following classes for file I/O operations:
 
-Відкриття файлу
-std::ifstream ifs("filename.txt");
+1. **`std::ifstream`**: Stream class to read from files.
+2. **`std::ofstream`**: Stream class to write to files.
+3. **`std::fstream`**: Stream class to both read from and write to files.
 
-або
-std::ifstream ifs;
-ifs.open("filename.txt");
+These classes are derived from `std::istream`, `std::ostream`, and `std::iostream`, respectively, which are in turn derived from `std::ios`.
 
-Закриття файлу:
-ifs.close();
+## Basic Classes and Their Usage
 
-Перевірка на успішне відкриття:
-if (!ifs.is_open()) {
-    std::cerr << "Failed to open file" << std::endl;
+### `std::ifstream` (Input File Stream)
+
+The `std::ifstream` class is used to read data from files. It inherits from `std::istream`.
+
+#### Example:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream inputFile("example.txt");
+    if (!inputFile) {
+        std::cerr << "Unable to open file";
+        return 1;
+    }
+
+    std::string line;
+    while (getline(inputFile, line)) {
+        std::cout << line << std::endl;
+    }
+
+    inputFile.close();
+    return 0;
 }
+```
 
-Читання даних:
-std::string line;
-while (std::getline(ifs, line)) {
-    // Обробка прочитаної лінії
+### `std::ofstream` (Output File Stream)
+
+The `std::ofstream` class is used to write data to files. It inherits from `std::ostream`.
+
+#### Example:
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ofstream outputFile("example.txt");
+    if (!outputFile) {
+        std::cerr << "Unable to open file";
+        return 1;
+    }
+
+    outputFile << "This is a line.\n";
+    outputFile << "This is another line.\n";
+
+    outputFile.close();
+    return 0;
 }
+```
 
-std::ofstream (Output File Stream)
+### `std::fstream` (File Stream)
 
-Відкриття файлу:
-std::ofstream ofs("filename.txt");
+The `std::fstream` class is used for both reading from and writing to files. It inherits from `std::iostream`.
 
-або
-std::ofstream ofs;
-ofs.open("filename.txt");
+#### Example:
 
-Закриття файлу:
-ofs.close();
+```cpp
+#include <iostream>
+#include <fstream>
 
-Запис даних:
-ofs << "This is a line of text." << std::endl;
+int main() {
+    std::fstream file("example.txt", std::ios::in | std::ios::out | std::ios::app);
+    if (!file) {
+        std::cerr << "Unable to open file";
+        return 1;
+    }
 
-std::fstream (File Stream)
+    file << "Appending a new line.\n";
 
-Відкриття файлу для читання і запису:
-std::fstream fs("filename.txt", std::ios::in | std::ios::out);
+    file.seekg(0); // Move the read position to the beginning of the file
+    std::string line;
+    while (getline(file, line)) {
+        std::cout << line << std::endl;
+    }
 
-або
-std::fstream fs;
-fs.open("filename.txt", std::ios::in | std::ios::out);
-
-Закриття файлу:
-fs.close();
-
-Читання і запис даних:
-fs << "This is a line of text." << std::endl;
-std::string line;
-fs.seekg(0); // Повернутися на початок файлу для читання
-while (std::getline(fs, line)) {
-    // Обробка прочитаної лінії
+    file.close();
+    return 0;
 }
+```
 
-Додаткові налаштування і прапори
-std::ios::in: Відкрити файл для читання.
-std::ios::out: Відкрити файл для запису.
-std::ios::binary: Відкрити файл в двійковому режимі.
-std::ios::app: Відкрити файл в режимі додавання (append), щоб нові дані додавалися в кінець файлу.
-std::ios::trunc: Якщо файл існує, його вміст буде видалено.
-std::ios::ate: Відкрити файл і встановити позицію вказівника в кінець файлу.
+## File Opening Modes
+
+When opening a file, you can specify the mode using `std::ios` flags:
+
+- `std::ios::in`: Open for reading.
+- `std::ios::out`: Open for writing.
+- `std::ios::binary`: Open in binary mode.
+- `std::ios::ate`: Seek to the end of the file upon opening.
+- `std::ios::app`: Append to the end of the file.
+- `std::ios::trunc`: Truncate the file if it already exists.
+
+You can combine these flags using the bitwise OR operator (`|`).
+
+#### Example:
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ofstream outputFile("example.txt", std::ios::out | std::ios::trunc);
+    if (!outputFile) {
+        std::cerr << "Unable to open file";
+        return 1;
+    }
+
+    outputFile << "This will overwrite the file.\n";
+
+    outputFile.close();
+    return 0;
+}
+```
+
+## Checking File State
+
+After performing file operations, it is often necessary to check the state of the file stream using the following member functions:
+
+- `ifstream::is_open()`: Checks if the file stream is open.
+- `ifstream::good()`: Checks if the stream is in a good state.
+- `ifstream::eof()`: Checks if the end of file has been reached.
+- `ifstream::fail()`: Checks if a logical error has occurred.
+- `ifstream::bad()`: Checks if a read/write error has occurred.
+
+#### Example:
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ifstream inputFile("example.txt");
+    if (!inputFile.is_open()) {
+        std::cerr << "Unable to open file";
+        return 1;
+    }
+
+    if (inputFile.good()) {
+        std::cout << "File is good for I/O operations" << std::endl;
+    }
+
+    std::string line;
+    while (getline(inputFile, line)) {
+        std::cout << line << std::endl;
+    }
+
+    if (inputFile.eof()) {
+        std::cout << "End of file reached" << std::endl;
+    }
+
+    inputFile.close();
+    return 0;
+}
+```
+
+## Reading and Writing Binary Files
+
+For binary file operations, use the `std::ios::binary` flag when opening the file and use `read` and `write` member functions.
+
+#### Example:
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+struct Data {
+    int id;
+    char name[20];
+};
+
+int main() {
+    // Writing binary data
+    Data writeData = {1, "Test"};
+    std::ofstream outputFile("example.bin", std::ios::binary);
+    outputFile.write(reinterpret_cast<char*>(&writeData), sizeof(writeData));
+    outputFile.close();
+
+    // Reading binary data
+    Data readData;
+    std::ifstream inputFile("example.bin", std::ios::binary);
+    inputFile.read(reinterpret_cast<char*>(&readData), sizeof(readData));
+    inputFile.close();
+
+    std::cout << "ID: " << readData.id << ", Name: " << readData.name << std::endl;
+
+    return 0;
+}
+```
