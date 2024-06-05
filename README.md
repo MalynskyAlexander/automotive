@@ -89,3 +89,6 @@ Test Results
 |16	    | 0.0899549 | 0.482733|
 |64	    | 0.0523468 | 0.602448|
 |256    | 0.042735	| 0.76027 |
+
+
+In every case binary file write speed was faster, the gap in writing time increases with the buffer size increasing. 
